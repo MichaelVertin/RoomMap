@@ -16,79 +16,65 @@ public class MapGenerator : MonoBehaviour
         // create first room at 0,0
         CreateRoom((0, 0), roomPrefab);
 
+        // add totalRooms
         for (int i = 0; i < totalRooms - 1; i++)
         {
+            // skip if no available locations
             if (availableRoomLocations.Count == 0) break;
 
+            // find random room
             int randRoomIndex = Random.Range(0, availableRoomLocations.Count);
             var (randX, randY) = availableRoomLocations[randRoomIndex];
 
             // create a room there
-            CreateRoom((randX, randY), roomPrefab);
+            Room newRoom = CreateRoom((randX, randY), roomPrefab);
 
-            Room newRoom = rooms[(randX, randY)];
-
-            // -----------------------------------------
-            // CONNECT NEW ROOM TO ALL ADJACENT ROOMS
-            // -----------------------------------------
-
-            // These are the 4 cardinal directions
+            // Basic Direction Vectors
             Vector2[] dirs = new Vector2[]
             {
-            new Vector2( 1,  0), // east
-            new Vector2(-1,  0), // west
-            new Vector2( 0,  1), // north
-            new Vector2( 0, -1)  // south
+                new Vector2( 1,  0), // east
+                new Vector2(-1,  0), // west
+                new Vector2( 0,  1), // north
+                new Vector2( 0, -1)  // south
             };
 
             foreach (var dir in dirs)
             {
+                // adjust by the direction
                 int nx = randX + (int)dir.x;
                 int ny = randY + (int)dir.y;
 
-                // no adjacent room? skip
+                // skip if the room doesn't exist
                 if (!rooms.ContainsKey((nx, ny)))
                     continue;
-
                 Room adjacentRoom = rooms[(nx, ny)];
 
-                // -----------------------------------------
-                // Find exits facing each other
-                // -----------------------------------------
-
+                // find the new room and adjacent room's exits
                 RoomExit exitNew = FindExitFacing(newRoom, dir);
                 RoomExit exitAdjacent = FindExitFacing(adjacentRoom, -dir);
 
-                if (exitNew == null || exitAdjacent == null)
-                {
-                    Debug.LogWarning($"Could not find exits for direction {dir}");
-                    continue;
-                }
-
-                // Already connected? Skip.
-                if (exitNew.roomTransition != null || exitAdjacent.roomTransition != null)
-                    continue;
-
-                // Create transition
+                // create and enable the transition
                 RoomTransition transition = new RoomTransition(exitNew, exitAdjacent);
                 transition.Enable();
             }
         }
     }
 
-    private void CreateRoom((int x, int y) coordinate, Room roomToInstantiate)
+    private Room CreateRoom((int x, int y) coordinate, Room roomToInstantiate)
     {
+        // validate the room is valid
         if (rooms.ContainsKey(coordinate))
             Debug.LogError("Attempted To Create Room in Occupied Space");
 
-        // create object
+        // create the room object
         Room newRoom = Instantiate(roomToInstantiate);
+
+        // convert coordinate to real-world position
         newRoom.transform.position = new Vector3(coordinate.x * 50, 0, coordinate.y * 50);
 
-        // store in rooms
-        rooms[coordinate] = newRoom;
 
-        // remove position from available rooms
+        // update rooms
+        rooms[coordinate] = newRoom;
         availableRoomLocations.Remove(coordinate);
 
         // add new available positions (north, east, west, south)
@@ -96,21 +82,26 @@ public class MapGenerator : MonoBehaviour
         AddIfAvailable((coordinate.x - 1, coordinate.y)); // West
         AddIfAvailable((coordinate.x, coordinate.y + 1)); // North
         AddIfAvailable((coordinate.x, coordinate.y - 1)); // South
+
+        return newRoom;
     }
+
+    // finds exit in the room that faces the specified direction
     private RoomExit FindExitFacing(Room room, Vector2 dir)
     {
-        // Get all hallways in this room
         Hallway[] hallways = room.GetComponentsInChildren<Hallway>(true);
 
+        // search for matching direction
         foreach (var hallway in hallways)
         {
-            if (hallway.direction == dir)   // match direction vector
+            if (hallway.direction == dir)
                 return hallway.roomExit;
         }
         Debug.LogError("Failed To Find Exit");
-        return null; // none found
+        return null;
     }
 
+    // adds the room if there are no conflicts
     private void AddIfAvailable((int x, int y) coord)
     {
         if (rooms.ContainsKey(coord)) return;                 // Already occupied  
