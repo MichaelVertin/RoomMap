@@ -1,0 +1,115 @@
+# =============== #
+#   Unity / C#    #
+# =============== #
+
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+
+# Crash and error logs
+sysinfo.txt
+crashlytics-build.properties
+
+# Visual Studio cache
+.vs/
+*.user
+*.userprefs
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.pidb
+*.booproj
+
+# Unity Asset Store tools
+*.unitypackage
+
+# Auto-generated VS Code project files
+.vscode/
+
+# Rider
+.idea/
+*.dotSettings.user
+
+# Unity generated build results
+*/UnityGenerated/
+*.apk
+*.aab
+*.unitypackage
+
+# Avoid committing any local Gradle files
+.gradle/
+**/*.gradle
+
+# =============== #
+#    Platform     #
+# =============== #
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Linux
+*~
+
+# =============== #
+#   Unity Extras  #
+# =============== #
+
+# Asset meta files needed — do NOT ignore *.meta
+# (Unity breaks without them)
+
+# Collaborate / Plastic SCM
+.uvprojx
+.vscode/settings.json
+
+# TextMeshPro auto-generated files
+[Tt]extMesh Pro/
+
+# Addressables
+Assets/AddressableAssetsData/*/*.bin*
+
+# Build cache
+Library/ScriptAssemblies/
+Library/ShaderCache/
+Library/PackageCache/
+
+# Packed memory snapshots
+*.memsnap
+
+# Unity Cache Server
+Cache/
+
+# Lightmap / GI cache
+Library/GI/
+
+# Rider plugin auto-generated
+Library/JetBrains/
+
+# =============== #
+#    Optional     #
+# =============== #
+# Uncomment these if you want to reduce noise further.
+
+# Ignore local scenes autosaves
+# *.unity.autosave
+
+# Ignore Animation previews
+# Library/StateCache/
+
+# Ignore profiler data
+# *.psess
+# *.vsp
+# *.vspx
